@@ -58,5 +58,5 @@ test("item at position returns correct item", () => {
   skiplist.insert(TestComparable(2));
   skiplist.insert(TestComparable(4));
 
-  expect(skiplist.atPosition(3).item.value).toBe(4);
+  expect(skiplist.atPosition(3).item.value).toBe(3);
 });

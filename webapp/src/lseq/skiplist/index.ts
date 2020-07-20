@@ -12,8 +12,6 @@ export default class SkipList<T extends Comparable> {
   }
 
   atPosition(position: number): Box<T> {
-    // Account for offset due to skipped
-    position = position + 1;
     let current = this.head[this.highestLevel];
     let currentPosition = 0;
     while (position !== currentPosition) {
