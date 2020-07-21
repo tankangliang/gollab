@@ -8,6 +8,7 @@ export default class Box<T extends Comparable> {
   right: Box<T> | null = null;
   left: Box<T> | null = null;
   bottom: Box<T> | null = null;
+  head: boolean;
 
   static Head(level: number) {
     const tmp: any = {
@@ -15,12 +16,13 @@ export default class Box<T extends Comparable> {
       compare: () => -1,
     };
 
-    return new Box(tmp, level);
+    return new Box(tmp, level, true);
   }
 
-  constructor(item: T, level: number) {
+  constructor(item: T, level: number, head: boolean = false) {
     this.item = item;
     this.level = level;
+    this.head = head;
   }
 
   compare(other: Box<T>) {
