@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package github.com.tankangliang.gollab;
+option go_package = "pb";
+import "identifier.proto";
+
+message Message {
+  string type = 1;
+  Identifier identifier = 2;
+}
