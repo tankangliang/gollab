@@ -1,5 +1,5 @@
 gen:
-	protoc --proto_path=proto proto/*.proto --go_out=plugins=grpc:pb
+	protoc --proto_path=. proto/*.proto --go_out=plugins=grpc:.
 
 clean:
 	rm pb/*.go
@@ -9,3 +9,11 @@ run:
 
 test:
 	go test -cover -race ./...
+
+webgen:
+	protoc \
+--plugin=protoc-gen-ts=./webapp/node_modules/.bin/protoc-gen-ts \
+--js_out=import_style=commonjs,binary:./webapp/src \
+--ts_out=service=grpc-web:./webapp/src \
+proto/*.proto
+

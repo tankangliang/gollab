@@ -1,8 +1,8 @@
 syntax = "proto3";
 
 package github.com.tankangliang.gollab;
-option go_package = "pb";
-import "identifier.proto";
+option go_package = "pb;pb";
+import "proto/identifier.proto";
 
 message Message {
   string type = 1;

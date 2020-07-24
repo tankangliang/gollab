@@ -53,14 +53,10 @@ func (server *RoomServer) CreateRoom(ctx context.Context, req *pb.CreateRoomRequ
 func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_ConnectServer) error {
 	userID := req.GetUser()
 	roomID := req.GetRoomID()
-
+	log.Printf("Got connect request from %s for room %s", userID, roomID)
 	if len(userID) < 1 {
+		log.Println("Invalid userID")
 		return status.Error(codes.InvalidArgument, "Invalid userID")
-	}
-
-	room, err := server.Rooms.GetRoom(roomID)
-	if err != nil {
-		return status.Errorf(codes.InvalidArgument, "No such room found: %s", err)
 	}
 
 	u := &user{
@@ -68,26 +64,21 @@ func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_
 		stream: stream,
 		err:    make(chan error),
 	}
-	room.users = append(room.users, u)
+
+	err := server.Rooms.AddUser(u, roomID)
+
+	if err != nil {
+		log.Printf("Failed to add user: %s", err)
+		return err
+	}
+	defer server.Rooms.RemoveUser(u, roomID)
+	log.Printf("User %s is connected to room %s", userID, roomID)
 	return <-u.err
 }
 
 // Broadcast handles users sending messages to be broadcast to other users
 func (server *RoomServer) Broadcast(ctx context.Context, message *pb.Message) (*pb.Close, error) {
-	roomID := message.GetRoomID()
 
-	room, err := server.Rooms.GetRoom(roomID)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "No such room found: %s", err)
-	}
-
-	for _, user := range room.users {
-		err := user.stream.Send(message)
-		if err != nil {
-			status.Errorf(codes.Internal, "Error sending message %s", err)
-			user.err <- err
-		}
-	}
-
+	go server.Rooms.Broadcast(message)
 	return &pb.Close{}, nil
 }

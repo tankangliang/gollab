@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net"
+	"net/http"
+
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 
 	"google.golang.org/grpc/reflection"
 
@@ -23,15 +25,29 @@ func main() {
 	grpcServer := grpc.NewServer()
 	pb.RegisterRoomServiceServer(grpcServer, roomServer)
 	reflection.Register(grpcServer)
+	wrappedGrpc := grpcweb.WrapServer(grpcServer,
+		grpcweb.WithAllowedRequestHeaders([]string{"*"}),
+		grpcweb.WithOriginFunc(func(origin string) bool {
+			fmt.Println(origin)
+			return true
+		}))
 
-	serverAddress := fmt.Sprintf("localhost:%d", *port)
-	listener, err := net.Listen("tcp", serverAddress)
+	serverAddress := fmt.Sprintf(":%d", *port)
+	//http.HandleFunc("/grpc", grpcHandler)
+	err := http.ListenAndServe(serverAddress, wrappedGrpc)
 	if err != nil {
-		log.Fatal("Failed to start server", err)
+		log.Fatalf("Failed to start server: %s", err)
 	}
+	/*
 
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		log.Fatal("Failed to start server", err)
-	}
+		listener, err := net.Listen("tcp", serverAddress)
+		if err != nil {
+			log.Fatal("Failed to start server", err)
+		}
+
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			log.Fatal("Failed to start server", err)
+		}
+	*/
 }

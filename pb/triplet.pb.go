@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.25.0
 // 	protoc        v3.6.1
-// source: triplet.proto
+// source: proto/triplet.proto
 
 package pb
 
@@ -38,7 +38,7 @@ type Triplet struct {
 func (x *Triplet) Reset() {
 	*x = Triplet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_triplet_proto_msgTypes[0]
+		mi := &file_proto_triplet_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -51,7 +51,7 @@ func (x *Triplet) String() string {
 func (*Triplet) ProtoMessage() {}
 
 func (x *Triplet) ProtoReflect() protoreflect.Message {
-	mi := &file_triplet_proto_msgTypes[0]
+	mi := &file_proto_triplet_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -64,7 +64,7 @@ func (x *Triplet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Triplet.ProtoReflect.Descriptor instead.
 func (*Triplet) Descriptor() ([]byte, []int) {
-	return file_triplet_proto_rawDescGZIP(), []int{0}
+	return file_proto_triplet_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Triplet) GetPath() uint32 {
@@ -88,37 +88,37 @@ func (x *Triplet) GetCount() uint32 {
 	return 0
 }
 
-var File_triplet_proto protoreflect.FileDescriptor
+var File_proto_triplet_proto protoreflect.FileDescriptor
 
-var file_triplet_proto_rawDesc = []byte{
-	0x0a, 0x0d, 0x74, 0x72, 0x69, 0x70, 0x6c, 0x65, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x61, 0x6e, 0x6b,
-	0x61, 0x6e, 0x67, 0x6c, 0x69, 0x61, 0x6e, 0x67, 0x2e, 0x67, 0x6f, 0x6c, 0x6c, 0x61, 0x62, 0x22,
-	0x47, 0x0a, 0x07, 0x54, 0x72, 0x69, 0x70, 0x6c, 0x65, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61,
-	0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x12, 0x12,
-	0x0a, 0x04, 0x73, 0x69, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x73, 0x69,
-	0x74, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x0d, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x04, 0x5a, 0x02, 0x70, 0x62, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+var file_proto_triplet_proto_rawDesc = []byte{
+	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x74, 0x72, 0x69, 0x70, 0x6c, 0x65, 0x74, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2e, 0x74, 0x61, 0x6e, 0x6b, 0x61, 0x6e, 0x67, 0x6c, 0x69, 0x61, 0x6e, 0x67, 0x2e, 0x67,
+	0x6f, 0x6c, 0x6c, 0x61, 0x62, 0x22, 0x47, 0x0a, 0x07, 0x54, 0x72, 0x69, 0x70, 0x6c, 0x65, 0x74,
+	0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04,
+	0x70, 0x61, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x73, 0x69, 0x74, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x07,
+	0x5a, 0x05, 0x70, 0x62, 0x3b, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_triplet_proto_rawDescOnce sync.Once
-	file_triplet_proto_rawDescData = file_triplet_proto_rawDesc
+	file_proto_triplet_proto_rawDescOnce sync.Once
+	file_proto_triplet_proto_rawDescData = file_proto_triplet_proto_rawDesc
 )
 
-func file_triplet_proto_rawDescGZIP() []byte {
-	file_triplet_proto_rawDescOnce.Do(func() {
-		file_triplet_proto_rawDescData = protoimpl.X.CompressGZIP(file_triplet_proto_rawDescData)
+func file_proto_triplet_proto_rawDescGZIP() []byte {
+	file_proto_triplet_proto_rawDescOnce.Do(func() {
+		file_proto_triplet_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_triplet_proto_rawDescData)
 	})
-	return file_triplet_proto_rawDescData
+	return file_proto_triplet_proto_rawDescData
 }
 
-var file_triplet_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_triplet_proto_goTypes = []interface{}{
+var file_proto_triplet_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_proto_triplet_proto_goTypes = []interface{}{
 	(*Triplet)(nil), // 0: github.com.tankangliang.gollab.Triplet
 }
-var file_triplet_proto_depIdxs = []int32{
+var file_proto_triplet_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -126,13 +126,13 @@ var file_triplet_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_triplet_proto_init() }
-func file_triplet_proto_init() {
-	if File_triplet_proto != nil {
+func init() { file_proto_triplet_proto_init() }
+func file_proto_triplet_proto_init() {
+	if File_proto_triplet_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_triplet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_triplet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Triplet); i {
 			case 0:
 				return &v.state
@@ -149,18 +149,18 @@ func file_triplet_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_triplet_proto_rawDesc,
+			RawDescriptor: file_proto_triplet_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_triplet_proto_goTypes,
-		DependencyIndexes: file_triplet_proto_depIdxs,
-		MessageInfos:      file_triplet_proto_msgTypes,
+		GoTypes:           file_proto_triplet_proto_goTypes,
+		DependencyIndexes: file_proto_triplet_proto_depIdxs,
+		MessageInfos:      file_proto_triplet_proto_msgTypes,
 	}.Build()
-	File_triplet_proto = out.File
-	file_triplet_proto_rawDesc = nil
-	file_triplet_proto_goTypes = nil
-	file_triplet_proto_depIdxs = nil
+	File_proto_triplet_proto = out.File
+	file_proto_triplet_proto_rawDesc = nil
+	file_proto_triplet_proto_goTypes = nil
+	file_proto_triplet_proto_depIdxs = nil
 }

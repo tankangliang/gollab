@@ -1,9 +1,9 @@
 syntax = "proto3";
 
 package github.com.tankangliang.gollab;
-option go_package = "pb";
+option go_package = "pb;pb";
 
-import "message.proto";
+import "proto/message.proto";
 
 message CreateRoomRequest { string id = 1; }
 

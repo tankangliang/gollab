@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package github.com.tankangliang.gollab;
-option go_package = "pb";
+option go_package = "pb;pb";
 
 message Triplet {
   uint32 path = 1;

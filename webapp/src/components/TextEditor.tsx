@@ -1,4 +1,5 @@
 import React from "react";
+
 type Props = {
   value: string;
   onInsert: (val: string, position: number) => void;
