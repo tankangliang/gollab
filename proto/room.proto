@@ -3,10 +3,21 @@ syntax = "proto3";
 package github.com.tankangliang.gollab;
 option go_package = "pb";
 
+import "message.proto";
+
 message CreateRoomRequest { string id = 1; }
 
 message CreateRoomResponse { bool accepted = 1; }
 
+message ConnectRequest {
+  string user = 1;
+  string roomID = 2;
+}
+
+message Close {}
+
 service RoomService {
   rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse) {};
+  rpc Connect(ConnectRequest) returns (stream Message) {};
+  rpc Broadcast(Message) returns (Close) {};
 }

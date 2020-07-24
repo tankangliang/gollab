@@ -2,8 +2,9 @@ package services
 
 import (
 	"errors"
-	"net"
 	"sync"
+
+	"github.com/tankangliang/gollab/pb"
 )
 
 // ErrRoomAlreadyExists is returned when a user attempts to create an existing room
@@ -63,6 +64,7 @@ type Room struct {
 }
 
 type user struct {
-	conn *net.Conn
-	id   string
+	stream pb.RoomService_ConnectServer
+	id     string
+	err    chan error
 }

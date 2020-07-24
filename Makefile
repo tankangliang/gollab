@@ -5,7 +5,7 @@ clean:
 	rm pb/*.go
 
 run:
-	go run main.go
+	go run main.go -port 8080
 
 test:
 	go test -cover -race ./...
