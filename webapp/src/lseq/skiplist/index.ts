@@ -14,6 +14,7 @@ export default class SkipList<T extends Comparable> {
   atPosition(position: number): Box<T> {
     let current = this.head[this.highestLevel];
     let currentPosition = 0;
+
     while (position !== currentPosition) {
       if (current.right) {
         const newPosition = currentPosition + current.right.skipped;

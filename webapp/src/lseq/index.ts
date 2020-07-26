@@ -1,7 +1,7 @@
-import Skiplist from "./skiplist";
-import Identifier from "./identifier";
-import Triplet from "./triplet";
-import Box from "./skiplist/box";
+import Identifier from './identifier';
+import Skiplist from './skiplist';
+import Box from './skiplist/box';
+import Triplet from './triplet';
 
 export default class LSEQ {
   size: number;
@@ -11,15 +11,12 @@ export default class LSEQ {
   boundary: number;
 
   constructor(
-    size: number = 32,
-    site: string = "",
-    count: number = 0,
-    boundary: number = 10
-  ) {
+      size: number = 32, site: string = '', count: number = 0,
+      boundary: number = 10) {
     this.size = size;
     this.store = new Skiplist();
-    if (site === "") {
-      site = this._getRandomSite(5);
+    if (site === '') {
+      site = LSEQ.getRandomString(5);
     }
     this.site = site;
     this.count = count;
@@ -27,33 +24,34 @@ export default class LSEQ {
   }
 
   insert(value: string, position: number): Identifier {
+    console.log('Called with position ', position)
     const leftBox = this.store.atPosition(position);
 
     const [leftTriplets, rightTriplets] = this._getTriplets(leftBox);
-    const [leftPath, rightPath] = this._tripletToPath(
-      leftTriplets,
-      rightTriplets
-    );
+    // console.log('Left is ', leftTriplets)
+    // console.log('Right is ', rightTriplets)
+    const [leftPath, rightPath] =
+        this._tripletToPath(leftTriplets, rightTriplets);
     const [newPath, depth] = this._allocatePath(leftPath, rightPath);
     const newTriplets = this._getNewTriplets(newPath, leftTriplets, depth);
     const newIdentifier = new Identifier(value, newTriplets);
-    this.broadcast("insert", newIdentifier);
+    this.broadcast('insert', newIdentifier);
     return newIdentifier;
   }
 
   delete(position: number): Identifier {
     const leftBox = this.store.atPosition(position);
 
-    this.broadcast("delete", leftBox.item);
+    this.broadcast('delete', leftBox.item);
     return leftBox.item;
   }
 
   broadcast(type: string, identifier: Identifier) {
-    if (type === "insert") {
+    if (type === 'insert') {
       this.store.insert(identifier);
     }
 
-    if (type === "delete") {
+    if (type === 'delete') {
       this.store.delete(identifier);
     }
   }
@@ -79,21 +77,16 @@ export default class LSEQ {
     return [leftTriplets, rightTriplets];
   }
 
-  _getNewTriplets(
-    newPath: number[],
-    leftTriplets: Triplet[],
-    depth: number
-  ): Triplet[] {
+  _getNewTriplets(newPath: number[], leftTriplets: Triplet[], depth: number):
+      Triplet[] {
     const newTriplets: Triplet[] = [...leftTriplets];
     newTriplets[depth] = new Triplet(newPath[depth], this.site, this.count);
     this.count++;
     return newTriplets;
   }
 
-  _tripletToPath(
-    leftTriplets: Triplet[],
-    rightTriplets: Triplet[]
-  ): [number[], number[]] {
+  _tripletToPath(leftTriplets: Triplet[], rightTriplets: Triplet[]):
+      [number[], number[]] {
     let leftPath: number[] = [];
     let rightPath: number[] = [];
     const maxlen = Math.max(leftTriplets.length, rightTriplets.length);
@@ -130,17 +123,13 @@ export default class LSEQ {
   }
 
   _getStrategy(depth: number) {
-    return depth % 2 === 0
-      ? this._leftToRight.bind(this)
-      : this._rightToLeft.bind(this);
+    return depth % 2 === 0 ? this._leftToRight.bind(this) :
+                             this._rightToLeft.bind(this);
   }
 
   _leftToRight(
-    leftPath: number[],
-    rightPath: number[],
-    depth: number,
-    interval: number
-  ) {
+      leftPath: number[], rightPath: number[], depth: number,
+      interval: number) {
     const step = Math.min(interval, this.boundary) - 1;
     const lastPath = leftPath[depth] + Math.floor(Math.random() * step) + 1;
 
@@ -150,11 +139,8 @@ export default class LSEQ {
   }
 
   _rightToLeft(
-    leftPath: number[],
-    rightPath: number[],
-    depth: number,
-    interval: number
-  ) {
+      leftPath: number[], rightPath: number[], depth: number,
+      interval: number) {
     const step = Math.min(interval, this.boundary) - 1;
     const lastPath = rightPath[depth] - Math.floor(Math.random() * step) + 1;
 
@@ -172,10 +158,10 @@ export default class LSEQ {
     }
     return [depth, interval];
   }
-  _getRandomSite(size: number = 5): string {
+  static getRandomString(size: number = 5): string {
     const characters =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
-    let site = "";
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+    let site = '';
 
     for (let i = 0; i < size; i++) {
       site += characters[Math.floor(Math.random() * characters.length)];
@@ -185,6 +171,6 @@ export default class LSEQ {
   }
 
   get string(): string {
-    return this.store.values.join("");
+    return this.store.values.join('');
   }
 }
