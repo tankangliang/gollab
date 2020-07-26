@@ -73,6 +73,11 @@ func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_
 	}
 	defer server.Rooms.RemoveUser(u, roomID)
 	log.Printf("User %s is connected to room %s", userID, roomID)
+	stream.Send(&pb.Message{
+		Type:       "success",
+		Identifier: &pb.Identifier{},
+		RoomID:     roomID,
+	})
 	return <-u.err
 }
 
