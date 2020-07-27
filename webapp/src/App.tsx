@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import TextEditor from "./components/TextEditor";
+import TextEditor from "./components/texteditor";
 import { grpc } from "@improbable-eng/grpc-web";
 import { Message } from "./proto/message_pb";
 import { CreateRoomRequest, ConnectRequest } from "./proto/room_pb";
@@ -133,7 +133,12 @@ function App() {
   return (
     <div className="container-fluid ">
       {room && (
-        <TextEditor value={value} onInsert={onInsert} onDelete={onDelete} />
+        <TextEditor
+          room={room}
+          value={value}
+          onInsert={onInsert}
+          onDelete={onDelete}
+        />
       )}
       {error && (
         <div className="row justify-content-center align-item-center">

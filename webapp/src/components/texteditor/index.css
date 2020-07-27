@@ -1,0 +1,53 @@
+.line {
+  align-items: end;
+  justify-content: end;
+  width: 3%;
+}
+
+.lines {
+  position: absolute;
+  display: block;
+  height: 100%;
+
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.texteditor {
+  padding: 5px;
+  margin: 0;
+  flex-direction: row;
+  position: absolute;
+  top: 100px;
+  bottom: 25%;
+  left: 0;
+  right: 0;
+  background: #ffd;
+  overflow: scroll;
+}
+
+textarea {
+  position: absolute;
+  left: 1%;
+  border: solid 5px black;
+  color: black;
+  background: inherit;
+  height: 100%;
+  padding: 0;
+  width: 97%;
+  margin: 0;
+  border: none;
+  outline: none;
+  resize: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  flex-direction: column;
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  appearance: textarea;
+}
