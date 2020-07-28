@@ -109,7 +109,12 @@ export default class SkipList<T extends Comparable> {
     const toPropagate = oldItem.right;
     while (oldItem !== null) {
       if (oldItem.left) oldItem.left.right = oldItem.right;
-      if (oldItem.right) oldItem.right.left = oldItem.left;
+      if (oldItem.right) {
+        oldItem.right.left = oldItem.left;
+        // This takes into account the fact that propagate will be called to account for off by 1 error.
+        oldItem.right.skipped += oldItem.skipped;
+      }
+
       oldItem = oldItem.top;
     }
 
@@ -179,6 +184,7 @@ export default class SkipList<T extends Comparable> {
     while (true) {
       if (node.top !== null) {
         node = node.top;
+        if (node.skipped < 2 && inc < 0) continue;
         node.skipped += inc;
         continue;
       } else if (node.right !== null) {

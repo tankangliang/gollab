@@ -113,6 +113,9 @@ func (r *Rooms) Broadcast(message *pb.Message) {
 	defer r.mutex.Unlock()
 	room := r.rooms[roomID]
 	for _, user := range room.users {
+		if message.GetUserID() == user.id {
+			continue
+		}
 		log.Printf("Sending message %s to user %s\n", message.String(), user.id)
 		err := user.stream.Send(message)
 		if err != nil {

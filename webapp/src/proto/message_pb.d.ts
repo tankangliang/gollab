@@ -16,6 +16,9 @@ export class Message extends jspb.Message {
   getRoomid(): string;
   setRoomid(value: string): void;
 
+  getUserid(): string;
+  setUserid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Message.AsObject;
   static toObject(includeInstance: boolean, msg: Message): Message.AsObject;
@@ -31,6 +34,7 @@ export namespace Message {
     type: string,
     identifier?: proto_identifier_pb.Identifier.AsObject,
     roomid: string,
+    userid: string,
   }
 }
 

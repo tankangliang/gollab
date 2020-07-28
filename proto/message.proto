@@ -8,4 +8,5 @@ message Message {
   string type = 1;
   Identifier identifier = 2;
   string roomID = 3;
+  string userID = 4;
 }

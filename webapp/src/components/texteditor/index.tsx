@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 type Props = {
   room: string;
@@ -8,29 +8,43 @@ type Props = {
 };
 const TextEditor: React.FC<Props> = (props) => {
   const { value, onInsert, onDelete, room } = props;
+  const [localVal, setLocal] = useState<string>("");
   const [position, setPosition] = useState<number>(0);
   const [lines] = useState<number[]>(new Array(99).fill(0));
-  const input = React.createRef<HTMLTextAreaElement>();
+  const input = useRef<any>(null);
 
-  console.log(position);
   useEffect(() => {
-    if (input && input.current) {
-      input.current.focus();
-      input.current.selectionStart = position;
-      input.current.selectionEnd = position;
-    }
+    setLocal(value);
   }, [value]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    const position = event.currentTarget.selectionStart;
-    //console.log(position);
-    switch (event.keyCode) {
-      case 8:
-        onDelete(position);
-        break;
-      default:
-        onInsert(event.key, position);
-        setPosition(position);
+    let pos = event.currentTarget.selectionStart;
+    let end = event.currentTarget.selectionEnd;
+
+    if (pos !== end) {
+      console.log("Start is " + pos.toString() + " End is " + end.toString());
+
+      for (let v = end; v > pos; v--) {
+        console.log("deleting", v);
+        onDelete(v);
+      }
+
+      if (event.key === "Backspace") {
+        setPosition(pos);
+        return;
+      }
+    }
+
+    if (event.key.length === 1) {
+      onInsert(event.key, pos);
+      setPosition(pos + 1);
+    } else if (event.key === "Backspace") {
+      onDelete(pos);
+      console.log("Deleting at ", pos);
+      setPosition(pos - 1);
+    } else if (event.key === "Enter") {
+      onInsert("\n", pos);
+      setPosition(pos + 1);
     }
   };
 
@@ -40,8 +54,8 @@ const TextEditor: React.FC<Props> = (props) => {
         Current room is {room}
         <button
           onClick={() => {
+            // Copy the room code
             const el = document.createElement("textarea");
-            console.log("test");
             el.value = room;
             el.style.position = "absolute";
             el.style.left = "-9999px";
@@ -65,7 +79,7 @@ const TextEditor: React.FC<Props> = (props) => {
           <textarea
             key="editor"
             ref={input}
-            value={props.value}
+            value={localVal}
             onKeyDown={handleKeyDown}
             onChange={(e) => {
               setPosition(e.currentTarget.selectionStart);

@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import TextEditor from "./components/texteditor";
+
+// GRPC
 import { grpc } from "@improbable-eng/grpc-web";
+import { Request } from "@improbable-eng/grpc-web/dist/typings/invoke";
+
+// PB
 import { Message } from "./proto/message_pb";
 import { CreateRoomRequest, ConnectRequest } from "./proto/room_pb";
 import { RoomService } from "./proto/room_pb_service";
 import { Identifier } from "./proto/identifier_pb";
-import { Request } from "@improbable-eng/grpc-web/dist/typings/invoke";
+
+// LSEQ
 import LSEQ from "./lseq";
 import LocalIdentifier from "./lseq/identifier";
 import * as converter from "./helpers/converter";
@@ -16,6 +22,7 @@ function App() {
   const [value, setValue] = useState<string>("");
 
   const [roomCode, setRoomCode] = useState<string>("");
+  const [user, setUser] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [room, setRoom] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -39,7 +46,7 @@ function App() {
       request: createRoomReq,
       host: "http://localhost:8080",
       onEnd: (res) => {
-        const { status, message } = res;
+        const { status } = res;
         if (status === grpc.Code.OK) {
           connect(newRoom);
         } else {
@@ -53,7 +60,9 @@ function App() {
   const connect = (roomToJoin: string) => {
     const connectReq = new ConnectRequest();
     connectReq.setRoomid(roomToJoin);
-    connectReq.setUser(LSEQ.getRandomString(5));
+    const user = LSEQ.getRandomString(5);
+    connectReq.setUser(user);
+    setUser(user);
     setLoading(true);
     const request = grpc.invoke(RoomService.Connect, {
       request: connectReq,
@@ -64,10 +73,12 @@ function App() {
           case "success":
             console.log(received);
             lseq = new LSEQ();
+            lseq.site = user;
             setLoading(false);
             setRoom(received.roomid);
             break;
           case "insert":
+            console.log("insert");
             const identifier = converter.pbIdentifierToLocalIdentifier(
               received.identifier as Identifier.AsObject
             );
@@ -104,12 +115,15 @@ function App() {
 
   const onInsert = (val: string, position: number) => {
     const identifier = lseq.insert(val, position);
+    setValue(lseq.string);
     onSendMessage(identifier, "insert");
   };
 
   const onDelete = (position: number) => {
-    lseq.delete(position);
+    if (position === 0) return;
+    const identifier = lseq.delete(position);
     setValue(lseq.string);
+    onSendMessage(identifier, "delete");
   };
 
   const onSendMessage = (iden: LocalIdentifier, type: string) => {
@@ -120,6 +134,7 @@ function App() {
     message.setRoomid(room);
     message.setType(type);
     message.setIdentifier(identifier);
+    message.setUserid(user);
 
     grpc.unary(RoomService.Broadcast, {
       request: message,
