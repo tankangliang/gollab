@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import TextEditor from "./components/texteditor";
+import template from "./template";
 
 // GRPC
 import { grpc } from "@improbable-eng/grpc-web";
@@ -48,7 +49,7 @@ function App() {
       onEnd: (res) => {
         const { status } = res;
         if (status === grpc.Code.OK) {
-          connect(newRoom);
+          connect(newRoom, true);
         } else {
           setError("Failed to create room");
         }
@@ -57,7 +58,7 @@ function App() {
     });
   };
 
-  const connect = (roomToJoin: string) => {
+  const connect = (roomToJoin: string, newRoom: boolean) => {
     const connectReq = new ConnectRequest();
     connectReq.setRoomid(roomToJoin);
     const user = LSEQ.getRandomString(5);
@@ -74,6 +75,11 @@ function App() {
             console.log(received);
             lseq = new LSEQ();
             lseq.site = user;
+            if (newRoom) {
+              for (let i = 0; i < template.length; i++) {
+                lseq.insert(template.charAt(i), i);
+              }
+            }
             setLoading(false);
             setRoom(received.roomid);
             break;
@@ -110,7 +116,7 @@ function App() {
     if (!roomCode) {
       setError("Please supply a room code");
     }
-    connect(roomCode);
+    connect(roomCode, false);
   };
 
   const onInsert = (val: string, position: number) => {
