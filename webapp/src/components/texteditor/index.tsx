@@ -75,11 +75,19 @@ const TextEditor: React.FC<Props> = (props) => {
       <div className="texteditor">
         <div className="lines">
           {lines.map((_, i) => (
-            <div className="line">{i + 1}</div>
+            <div key={i} className="line">
+              {i + 1}
+            </div>
           ))}
         </div>
         <div>
           <textarea
+            onScroll={(e) => {
+              const element = e.currentTarget;
+              const val = element.scrollTop;
+              const lines = document.getElementsByClassName("lines")[0];
+              (lines as HTMLDivElement).style.marginTop = "-" + val + "px";
+            }}
             key="editor"
             ref={input}
             value={localVal}

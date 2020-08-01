@@ -25,7 +25,7 @@ function App() {
   const [roomCode, setRoomCode] = useState<string>("");
   const [user, setUser] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [room, setRoom] = useState<string>("a");
+  const [room, setRoom] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [request, setRequest] = useState<Request | null>(null);
 

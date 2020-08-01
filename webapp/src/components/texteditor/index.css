@@ -22,12 +22,12 @@
   left: 0;
   right: 0;
   background: #ffd;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 textarea {
   position: absolute;
-  left: 1%;
+  left: 1.5%;
   border: solid 5px black;
   color: black;
   background: inherit;
