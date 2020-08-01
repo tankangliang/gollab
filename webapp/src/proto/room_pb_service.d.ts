@@ -32,11 +32,21 @@ type RoomServiceBroadcast = {
   readonly responseType: typeof proto_room_pb.Close;
 };
 
+type RoomServiceRun = {
+  readonly methodName: string;
+  readonly service: typeof RoomService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof proto_room_pb.RunRequest;
+  readonly responseType: typeof proto_room_pb.RunResponse;
+};
+
 export class RoomService {
   static readonly serviceName: string;
   static readonly CreateRoom: RoomServiceCreateRoom;
   static readonly Connect: RoomServiceConnect;
   static readonly Broadcast: RoomServiceBroadcast;
+  static readonly Run: RoomServiceRun;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -89,6 +99,15 @@ export class RoomServiceClient {
   broadcast(
     requestMessage: proto_message_pb.Message,
     callback: (error: ServiceError|null, responseMessage: proto_room_pb.Close|null) => void
+  ): UnaryResponse;
+  run(
+    requestMessage: proto_room_pb.RunRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: proto_room_pb.RunResponse|null) => void
+  ): UnaryResponse;
+  run(
+    requestMessage: proto_room_pb.RunRequest,
+    callback: (error: ServiceError|null, responseMessage: proto_room_pb.RunResponse|null) => void
   ): UnaryResponse;
 }
 

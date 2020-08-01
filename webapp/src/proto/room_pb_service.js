@@ -38,6 +38,15 @@ RoomService.Broadcast = {
   responseType: proto_room_pb.Close
 };
 
+RoomService.Run = {
+  methodName: "Run",
+  service: RoomService,
+  requestStream: false,
+  responseStream: false,
+  requestType: proto_room_pb.RunRequest,
+  responseType: proto_room_pb.RunResponse
+};
+
 exports.RoomService = RoomService;
 
 function RoomServiceClient(serviceHost, options) {
@@ -120,6 +129,37 @@ RoomServiceClient.prototype.broadcast = function broadcast(requestMessage, metad
     callback = arguments[1];
   }
   var client = grpc.unary(RoomService.Broadcast, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+RoomServiceClient.prototype.run = function run(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(RoomService.Run, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

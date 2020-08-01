@@ -68,6 +68,50 @@ export namespace ConnectRequest {
   }
 }
 
+export class RunRequest extends jspb.Message {
+  getFile(): string;
+  setFile(value: string): void;
+
+  getRoom(): string;
+  setRoom(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RunRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RunRequest): RunRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RunRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RunRequest;
+  static deserializeBinaryFromReader(message: RunRequest, reader: jspb.BinaryReader): RunRequest;
+}
+
+export namespace RunRequest {
+  export type AsObject = {
+    file: string,
+    room: string,
+  }
+}
+
+export class RunResponse extends jspb.Message {
+  getOutput(): string;
+  setOutput(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RunResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: RunResponse): RunResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RunResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RunResponse;
+  static deserializeBinaryFromReader(message: RunResponse, reader: jspb.BinaryReader): RunResponse;
+}
+
+export namespace RunResponse {
+  export type AsObject = {
+    output: string,
+  }
+}
+
 export class Close extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Close.AsObject;

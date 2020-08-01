@@ -1,9 +1,13 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"os/exec"
 
 	"github.com/tankangliang/gollab/pb"
 	"google.golang.org/grpc/codes"
@@ -91,5 +95,24 @@ func (server *RoomServer) Broadcast(ctx context.Context, message *pb.Message) (*
 
 // Run writes the input into a file and executes with "go run {filename}" and returns the output
 func (server *RoomServer) Run(ctx context.Context, req *pb.RunRequest) (*pb.RunResponse, error) {
+	file := req.GetFile()
+	room := req.GetRoom()
+	filename := "./tmp/" + room + ".go"
+	err := ioutil.WriteFile(filename, []byte(file), 0644)
+	if err != nil {
+		log.Println("Failed to write to file for room ", room, err)
+		return nil, status.Error(codes.Internal, "Failed to write to file")
+	}
+
+	cmd := exec.Command("go", "run", filename)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err = cmd.Run()
+	if err != nil {
+		log.Println("Failed to run file  ", filename)
+		return nil, status.Error(codes.Internal, "Failed to run file")
+	}
+	fmt.Println("Output is ", out.String())
 	return nil, nil
+
 }

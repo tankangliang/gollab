@@ -13,12 +13,18 @@ export class Message extends jspb.Message {
   getIdentifier(): proto_identifier_pb.Identifier | undefined;
   setIdentifier(value?: proto_identifier_pb.Identifier): void;
 
+  hasOutput(): boolean;
+  clearOutput(): void;
+  getOutput(): string;
+  setOutput(value: string): void;
+
   getRoomid(): string;
   setRoomid(value: string): void;
 
   getUserid(): string;
   setUserid(value: string): void;
 
+  getDataCase(): Message.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Message.AsObject;
   static toObject(includeInstance: boolean, msg: Message): Message.AsObject;
@@ -33,8 +39,15 @@ export namespace Message {
   export type AsObject = {
     type: string,
     identifier?: proto_identifier_pb.Identifier.AsObject,
+    output: string,
     roomid: string,
     userid: string,
+  }
+
+  export enum DataCase {
+    DATA_NOT_SET = 0,
+    IDENTIFIER = 2,
+    OUTPUT = 5,
   }
 }
 

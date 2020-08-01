@@ -9,7 +9,7 @@ import { Request } from "@improbable-eng/grpc-web/dist/typings/invoke";
 
 // PB
 import { Message } from "./proto/message_pb";
-import { CreateRoomRequest, ConnectRequest } from "./proto/room_pb";
+import { CreateRoomRequest, ConnectRequest, RunRequest } from "./proto/room_pb";
 import { RoomService } from "./proto/room_pb_service";
 import { Identifier } from "./proto/identifier_pb";
 
@@ -151,6 +151,20 @@ function App() {
     });
   };
 
+  const onRun = () => {
+    const runRequest = new RunRequest();
+    runRequest.setRoom(room);
+    runRequest.setFile(lseq.string);
+    grpc.unary(RoomService.Run, {
+      request: runRequest,
+      host: "http://localhost:8080",
+      onEnd: (res) => {
+        const { status, message } = res;
+        console.log(status);
+      },
+    });
+  };
+
   return (
     <div className="container-fluid ">
       {room && (
@@ -159,6 +173,7 @@ function App() {
           value={value}
           onInsert={onInsert}
           onDelete={onDelete}
+          onRun={onRun}
         />
       )}
       {error && (

@@ -26,13 +26,48 @@ goog.exportSymbol("proto.github.com.tankangliang.gollab.Message", null, global);
  * @constructor
  */
 proto.github.com.tankangliang.gollab.Message = function (opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(
+    this,
+    opt_data,
+    0,
+    -1,
+    null,
+    proto.github.com.tankangliang.gollab.Message.oneofGroups_
+  );
 };
 goog.inherits(proto.github.com.tankangliang.gollab.Message, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.github.com.tankangliang.gollab.Message.displayName =
     "proto.github.com.tankangliang.gollab.Message";
 }
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.github.com.tankangliang.gollab.Message.oneofGroups_ = [[2, 5]];
+
+/**
+ * @enum {number}
+ */
+proto.github.com.tankangliang.gollab.Message.DataCase = {
+  DATA_NOT_SET: 0,
+  IDENTIFIER: 2,
+  OUTPUT: 5,
+};
+
+/**
+ * @return {proto.github.com.tankangliang.gollab.Message.DataCase}
+ */
+proto.github.com.tankangliang.gollab.Message.prototype.getDataCase = function () {
+  return /** @type {proto.github.com.tankangliang.gollab.Message.DataCase} */ (jspb.Message.computeOneofCase(
+    this,
+    proto.github.com.tankangliang.gollab.Message.oneofGroups_[0]
+  ));
+};
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
   /**
@@ -73,6 +108,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
         identifier:
           (f = msg.getIdentifier()) &&
           proto_identifier_pb.Identifier.toObject(includeInstance, f),
+        output: jspb.Message.getFieldWithDefault(msg, 5, ""),
         roomid: jspb.Message.getFieldWithDefault(msg, 3, ""),
         userid: jspb.Message.getFieldWithDefault(msg, 4, ""),
       };
@@ -129,6 +165,10 @@ proto.github.com.tankangliang.gollab.Message.deserializeBinaryFromReader = funct
         );
         msg.setIdentifier(value);
         break;
+      case 5:
+        var value = /** @type {string} */ (reader.readString());
+        msg.setOutput(value);
+        break;
       case 3:
         var value = /** @type {string} */ (reader.readString());
         msg.setRoomid(value);
@@ -182,6 +222,10 @@ proto.github.com.tankangliang.gollab.Message.serializeBinaryToWriter = function 
       proto_identifier_pb.Identifier.serializeBinaryToWriter
     );
   }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(5, f);
+  }
   f = message.getRoomid();
   if (f.length > 0) {
     writer.writeString(3, f);
@@ -223,7 +267,12 @@ proto.github.com.tankangliang.gollab.Message.prototype.getIdentifier = function 
 proto.github.com.tankangliang.gollab.Message.prototype.setIdentifier = function (
   value
 ) {
-  jspb.Message.setWrapperField(this, 2, value);
+  jspb.Message.setOneofWrapperField(
+    this,
+    2,
+    proto.github.com.tankangliang.gollab.Message.oneofGroups_[0],
+    value
+  );
 };
 
 proto.github.com.tankangliang.gollab.Message.prototype.clearIdentifier = function () {
@@ -236,6 +285,43 @@ proto.github.com.tankangliang.gollab.Message.prototype.clearIdentifier = functio
  */
 proto.github.com.tankangliang.gollab.Message.prototype.hasIdentifier = function () {
   return jspb.Message.getField(this, 2) != null;
+};
+
+/**
+ * optional string output = 5;
+ * @return {string}
+ */
+proto.github.com.tankangliang.gollab.Message.prototype.getOutput = function () {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+/** @param {string} value */
+proto.github.com.tankangliang.gollab.Message.prototype.setOutput = function (
+  value
+) {
+  jspb.Message.setOneofField(
+    this,
+    5,
+    proto.github.com.tankangliang.gollab.Message.oneofGroups_[0],
+    value
+  );
+};
+
+proto.github.com.tankangliang.gollab.Message.prototype.clearOutput = function () {
+  jspb.Message.setOneofField(
+    this,
+    5,
+    proto.github.com.tankangliang.gollab.Message.oneofGroups_[0],
+    undefined
+  );
+};
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.github.com.tankangliang.gollab.Message.prototype.hasOutput = function () {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 /**

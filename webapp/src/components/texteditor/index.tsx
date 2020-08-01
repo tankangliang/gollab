@@ -5,9 +5,10 @@ type Props = {
   value: string;
   onInsert: (val: string, position: number) => void;
   onDelete: (position: number) => void;
+  onRun: () => void;
 };
 const TextEditor: React.FC<Props> = (props) => {
-  const { value, onInsert, onDelete, room } = props;
+  const { value, onInsert, onDelete, room, onRun } = props;
   const [localVal, setLocal] = useState<string>("");
   const [position, setPosition] = useState<number>(0);
   const [lines] = useState<number[]>(new Array(99).fill(0));
@@ -68,7 +69,10 @@ const TextEditor: React.FC<Props> = (props) => {
         >
           Copy Room Code
         </button>
-        <button className="btn align-self-end btn-outline-danger ml-3">
+        <button
+          onClick={onRun}
+          className="btn align-self-end btn-outline-danger ml-3"
+        >
           Run
         </button>
       </div>
