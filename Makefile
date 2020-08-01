@@ -10,6 +10,8 @@ run:
 test:
 	go test -cover -race ./...
 
+
+
 webgen:
 	protoc \
 --plugin=protoc-gen-ts=./webapp/node_modules/.bin/protoc-gen-ts \
