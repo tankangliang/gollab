@@ -1,2 +1,2 @@
-server: go run main.go -port 8080
+server: go run main.go -port $PORT
 client: cd webapp && yarn start
