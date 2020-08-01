@@ -10,7 +10,9 @@ run:
 test:
 	go test -cover -race ./...
 
-
+webrun:
+	cd webapp && yarn start
+	
 
 webgen:
 	protoc \
