@@ -10,18 +10,28 @@ Algorithm for the CRDT can be found [here](https://hal.archives-ouvertes.fr/hal-
 2. React
 3. gRPC
 
+## Setting up the application
+
+```bash
+cd webapp/
+yarn install  /  npm install
+```
+
 ## Running the application
 
 ```bash
 make run # Runs the backend service
 make webrun # Runs the frontend
+
 ```
 
 Currently, two separate terminals are required to run the application.
 
+More details can be found in the `main.go` file.
+
 ## Todo
 
-- [ ] Ability to run the file
-- [ ] Display for file execution output
-- [ ] Handling tabs
-- [ ] Handling multiple key presses like copy paste
+-   [ ] Ability to run the file
+-   [ ] Display for file execution output
+-   [ ] Handling tabs
+-   [ ] Handling multiple key presses like copy paste
