@@ -68,6 +68,9 @@ const TextEditor: React.FC<Props> = (props) => {
         >
           Copy Room Code
         </button>
+        <button className="btn align-self-end btn-outline-danger ml-3">
+          Run
+        </button>
       </div>
       <div className="texteditor">
         <div className="lines">

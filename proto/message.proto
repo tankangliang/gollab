@@ -6,7 +6,11 @@ import "proto/identifier.proto";
 
 message Message {
   string type = 1;
-  Identifier identifier = 2;
+  oneof data {
+    Identifier identifier = 2;
+    string output = 5;
+  }
+
   string roomID = 3;
   string userID = 4;
 }

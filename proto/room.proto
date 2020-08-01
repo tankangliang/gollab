@@ -14,10 +14,18 @@ message ConnectRequest {
   string roomID = 2;
 }
 
+message RunRequest {
+  string file = 1;
+  string room = 2;
+}
+
+message RunResponse { string output = 1; }
+
 message Close {}
 
 service RoomService {
   rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse) {};
   rpc Connect(ConnectRequest) returns (stream Message) {};
   rpc Broadcast(Message) returns (Close) {};
+  rpc Run(RunRequest) returns (RunResponse) {};
 }

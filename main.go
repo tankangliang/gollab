@@ -28,7 +28,6 @@ func main() {
 	wrappedGrpc := grpcweb.WrapServer(grpcServer,
 		grpcweb.WithAllowedRequestHeaders([]string{"*"}),
 		grpcweb.WithOriginFunc(func(origin string) bool {
-			fmt.Println(origin)
 			return true
 		}))
 

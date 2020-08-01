@@ -74,10 +74,11 @@ func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_
 	defer server.Rooms.RemoveUser(u, roomID)
 	log.Printf("User %s is connected to room %s", userID, roomID)
 	stream.Send(&pb.Message{
-		Type:       "success",
-		Identifier: &pb.Identifier{},
-		RoomID:     roomID,
+		Type:   "success",
+		Data:   &pb.Message_Identifier{},
+		RoomID: roomID,
 	})
+
 	return <-u.err
 }
 
@@ -86,4 +87,9 @@ func (server *RoomServer) Broadcast(ctx context.Context, message *pb.Message) (*
 
 	go server.Rooms.Broadcast(message)
 	return &pb.Close{}, nil
+}
+
+// Run writes the input into a file and executes with "go run {filename}" and returns the output
+func (server *RoomServer) Run(ctx context.Context, req *pb.RunRequest) (*pb.RunResponse, error) {
+	return nil, nil
 }
