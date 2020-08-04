@@ -31,7 +31,9 @@ More details can be found in the `main.go` file.
 
 ## Todo
 
--   [ ] Ability to run the file
--   [ ] Display for file execution output
--   [ ] Handling tabs
--   [ ] Handling multiple key presses like copy paste
+- [x] Ability to run the file
+- [x] Display for file execution output
+- [x] Disconnect client when pages closes
+- [x] Syncs up users on first load
+- [ ] Handling tabs
+- [ ] Handling multiple key presses like copy paste
