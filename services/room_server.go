@@ -84,7 +84,22 @@ func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_
 	})
 
 	server.Rooms.SendCurrentState(roomID)
-	return <-u.err
+
+	go func(ctx context.Context) {
+		for {
+			if ctx.Err() != nil {
+				u.err <- ctx.Err()
+				return
+			}
+		}
+	}(stream.Context())
+	select {
+	case a := <-u.err:
+		return a
+	case <-stream.Context().Done():
+		return nil
+	}
+
 }
 
 // Broadcast handles users sending messages to be broadcast to other users
