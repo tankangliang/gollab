@@ -26,7 +26,7 @@ import * as converter from "./helpers/converter";
 let lseq = new LSEQ();
 function App() {
   const [value, setValue] = useState<string>("");
-
+  const [lseq, setLSEQ] = useState<LSEQ>(new LSEQ());
   const [roomCode, setRoomCode] = useState<string>("");
   const [user, setUser] = useState<string>("");
   const [output, setOutput] = useState<string>("");
@@ -79,7 +79,6 @@ function App() {
         switch (received.type) {
           case "success":
             console.log(received);
-            lseq = new LSEQ();
             lseq.site = user;
             if (newRoom) {
               for (let i = 0; i < template.length; i++) {
@@ -89,11 +88,20 @@ function App() {
             setLoading(false);
             setRoom(received.roomid);
             break;
+          case "sendstate":
+            console.log("sending state");
 
+            lseq.values.forEach((val) => {
+              //console.log("sending ", val);
+              onSendMessage("insert", received.roomid, val);
+            });
+
+            break;
           case "output":
             setOutput(received.output);
             break;
           default:
+            console.log(received.type);
             const identifier = converter.pbIdentifierToLocalIdentifier(
               received.identifier as Identifier.AsObject
             );
@@ -131,24 +139,25 @@ function App() {
   const onInsert = (val: string, position: number) => {
     const identifier = lseq.insert(val, position);
     setValue(lseq.string);
-    onSendMessage("insert", identifier);
+    onSendMessage("insert", room, identifier);
   };
 
   const onDelete = (position: number) => {
     if (position === 0) return;
     const identifier = lseq.delete(position);
     setValue(lseq.string);
-    onSendMessage("delete", identifier);
+    onSendMessage("delete", room, identifier);
   };
 
   const onSendMessage = (
     type: string,
+    roomID: string,
     iden?: LocalIdentifier,
     output?: string
   ) => {
     const message = new Message();
 
-    message.setRoomid(room);
+    message.setRoomid(roomID);
     message.setType(type);
     if (iden) {
       const identifier = converter.localIdentifierToPbIdentifier(iden);
@@ -182,11 +191,11 @@ function App() {
         const data = message?.toObject() as RunResponse.AsObject;
         if (status === grpc.Code.OK) {
           setOutput(data.output);
-          onSendMessage("output", undefined, data.output);
+          onSendMessage("output", room, undefined, data.output);
         } else {
           const out = statusMessage.replace(/tmp\//g, "\n");
           setOutput(out);
-          onSendMessage("output", undefined, out);
+          onSendMessage("output", room, undefined, out);
         }
       },
     });

@@ -1,5 +1,5 @@
-import Box from "./box";
-import Comparable from "./comparable";
+import Box from './box';
+import Comparable from './comparable';
 
 export default class SkipList<T extends Comparable> {
   head: Box<T>[];
@@ -82,7 +82,6 @@ export default class SkipList<T extends Comparable> {
     return [false, current, position];
   }
 
-  // TODO
   insert(item: T) {
     const newItem = new Box(item, 0);
     const [found, left, position] = this.find(newItem);
@@ -103,7 +102,7 @@ export default class SkipList<T extends Comparable> {
   delete(item: T) {
     const itemToDelete = new Box(item, 0);
     const [found, box] = this.find(itemToDelete);
-    let oldItem: Box<T> | null = box;
+    let oldItem: Box<T>|null = box;
     if (!found) return;
 
     const toPropagate = oldItem.right;
@@ -111,7 +110,8 @@ export default class SkipList<T extends Comparable> {
       if (oldItem.left) oldItem.left.right = oldItem.right;
       if (oldItem.right) {
         oldItem.right.left = oldItem.left;
-        // This takes into account the fact that propagate will be called to account for off by 1 error.
+        // This takes into account the fact that propagate will be called to
+        // account for off by 1 error.
         oldItem.right.skipped += oldItem.skipped;
       }
 
@@ -179,7 +179,7 @@ export default class SkipList<T extends Comparable> {
    * @param node node to start from
    * @param inc +1 if insert, -1 if delete
    */
-  propagate(node: Box<T> | null, inc: number) {
+  propagate(node: Box<T>|null, inc: number) {
     if (node === null) return;
     while (true) {
       if (node.top !== null) {
@@ -197,12 +197,13 @@ export default class SkipList<T extends Comparable> {
     return;
   }
 
+
   get values(): T[] {
     let current = this.head[0];
     let vals: T[] = [];
 
     while (current.right !== null) {
-      vals[vals.length] = current.right.item.value;
+      vals[vals.length] = current.right.item;
       current = current.right;
     }
     return vals;

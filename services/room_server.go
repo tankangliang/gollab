@@ -83,6 +83,7 @@ func (server *RoomServer) Connect(req *pb.ConnectRequest, stream pb.RoomService_
 		RoomID: roomID,
 	})
 
+	server.Rooms.SendCurrentState(roomID)
 	return <-u.err
 }
 

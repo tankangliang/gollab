@@ -20,6 +20,7 @@ type RoomStore interface {
 	AddUser(u *user, roomID string) error
 	RemoveUser(u *user, roomID string)
 	Broadcast(message *pb.Message)
+	SendCurrentState(roomID string)
 }
 
 // Rooms is an implementation of the RoomStore
@@ -78,6 +79,7 @@ func (r *Rooms) AddUser(u *user, roomID string) error {
 		return status.Errorf(codes.InvalidArgument, "No such room found")
 	}
 	room.users = append(room.users, u)
+
 	return nil
 }
 
@@ -89,13 +91,18 @@ func (r *Rooms) RemoveUser(u *user, roomID string) {
 	room := r.rooms[roomID]
 	log.Println("Current state is ", room.users)
 	for i := range room.users {
+		log.Printf("i is %v, room users is %v, length is %v", i, room.users[i], len(room.users))
 		if room.users[i].id == u.id {
 			if i < len(room.users)-1 {
+				log.Println("First block is ran with length ", len(room.users))
 				room.users = append(room.users[:i], room.users[i+1:]...)
-			} else {
-				room.users = room.users[:i]
-			}
 
+			} else {
+				log.Println("Second block is ran")
+				room.users = room.users[:i]
+
+			}
+			break
 		}
 	}
 
@@ -112,11 +119,13 @@ func (r *Rooms) Broadcast(message *pb.Message) {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 	room := r.rooms[roomID]
+
 	for _, user := range room.users {
+
 		if message.GetUserID() == user.id {
 			continue
 		}
-		log.Printf("Sending message %s to user %s\n", message.String(), user.id)
+		//log.Printf("Sending message %s to user %s\n", message.String(), user.id)
 		err := user.stream.Send(message)
 		if err != nil {
 			log.Printf("Failed to send message: %s\n", err)
@@ -125,6 +134,20 @@ func (r *Rooms) Broadcast(message *pb.Message) {
 		}
 	}
 
+}
+
+// SendCurrentState prompts the first user in the list to broadcast all identifiers
+func (r *Rooms) SendCurrentState(roomID string) {
+	log.Println("Asking room to send state")
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	firstUser := r.rooms[roomID].users[0]
+
+	firstUser.stream.Send(&pb.Message{
+		Type:   "sendstate",
+		Data:   &pb.Message_Identifier{},
+		RoomID: roomID,
+	})
 }
 
 // Room holds information about users
