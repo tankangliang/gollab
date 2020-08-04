@@ -14,7 +14,7 @@ Algorithm for the CRDT can be found [here](https://hal.archives-ouvertes.fr/hal-
 
 ```bash
 cd webapp/
-yarn install  /  npm install
+yarn install
 ```
 
 ## Running the application
