@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 
 	"github.com/tankangliang/gollab/pb"
@@ -103,16 +103,24 @@ func (server *RoomServer) Run(ctx context.Context, req *pb.RunRequest) (*pb.RunR
 		log.Println("Failed to write to file for room ", room, err)
 		return nil, status.Error(codes.Internal, "Failed to write to file")
 	}
+	defer os.Remove(filename)
 
 	cmd := exec.Command("go", "run", filename)
-	var out bytes.Buffer
+	var out, outerr bytes.Buffer
 	cmd.Stdout = &out
+	cmd.Stderr = &outerr
+
 	err = cmd.Run()
 	if err != nil {
-		log.Println("Failed to run file  ", filename)
-		return nil, status.Error(codes.Internal, "Failed to run file")
+		log.Printf("Failed to run file  %s\n", err)
+
+		return nil, status.Error(codes.Internal, outerr.String()[25:])
+
+		//return nil, status.Error(codes.Internal, "Failed to run file")
+	} else {
+		return &pb.RunResponse{
+			Output: out.String(),
+		}, nil
 	}
-	fmt.Println("Output is ", out.String())
-	return nil, nil
 
 }

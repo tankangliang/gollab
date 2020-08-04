@@ -3,12 +3,13 @@ import "./index.css";
 type Props = {
   room: string;
   value: string;
+  output: string;
   onInsert: (val: string, position: number) => void;
   onDelete: (position: number) => void;
   onRun: () => void;
 };
 const TextEditor: React.FC<Props> = (props) => {
-  const { value, onInsert, onDelete, room, onRun } = props;
+  const { value, onInsert, onDelete, room, onRun, output } = props;
   const [localVal, setLocal] = useState<string>("");
   const [position, setPosition] = useState<number>(0);
   const [lines] = useState<number[]>(new Array(99).fill(0));
@@ -104,6 +105,11 @@ const TextEditor: React.FC<Props> = (props) => {
             }}
           />
         </div>
+      </div>
+      <div className="output">
+        {output.split("\n").map((text, i) => (
+          <p key={text + i}>{text}</p>
+        ))}
       </div>
     </div>
   );

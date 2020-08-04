@@ -9,7 +9,12 @@ import { Request } from "@improbable-eng/grpc-web/dist/typings/invoke";
 
 // PB
 import { Message } from "./proto/message_pb";
-import { CreateRoomRequest, ConnectRequest, RunRequest } from "./proto/room_pb";
+import {
+  CreateRoomRequest,
+  ConnectRequest,
+  RunRequest,
+  RunResponse,
+} from "./proto/room_pb";
 import { RoomService } from "./proto/room_pb_service";
 import { Identifier } from "./proto/identifier_pb";
 
@@ -24,6 +29,7 @@ function App() {
 
   const [roomCode, setRoomCode] = useState<string>("");
   const [user, setUser] = useState<string>("");
+  const [output, setOutput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [room, setRoom] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -92,6 +98,8 @@ function App() {
             lseq.broadcast(received.type, identifier);
 
             break;
+          case "output":
+            setOutput(received.output);
         }
 
         setValue(lseq.string);
@@ -122,24 +130,34 @@ function App() {
   const onInsert = (val: string, position: number) => {
     const identifier = lseq.insert(val, position);
     setValue(lseq.string);
-    onSendMessage(identifier, "insert");
+    onSendMessage("insert", identifier);
   };
 
   const onDelete = (position: number) => {
     if (position === 0) return;
     const identifier = lseq.delete(position);
     setValue(lseq.string);
-    onSendMessage(identifier, "delete");
+    onSendMessage("delete", identifier);
   };
 
-  const onSendMessage = (iden: LocalIdentifier, type: string) => {
+  const onSendMessage = (
+    type: string,
+    iden?: LocalIdentifier,
+    output?: string
+  ) => {
     const message = new Message();
-
-    const identifier = converter.localIdentifierToPbIdentifier(iden);
 
     message.setRoomid(room);
     message.setType(type);
-    message.setIdentifier(identifier);
+    if (iden) {
+      const identifier = converter.localIdentifierToPbIdentifier(iden);
+      message.setIdentifier(identifier);
+    }
+
+    if (output) {
+      message.setOutput(output);
+    }
+
     message.setUserid(user);
 
     grpc.unary(RoomService.Broadcast, {
@@ -159,8 +177,16 @@ function App() {
       request: runRequest,
       host: "http://localhost:8080",
       onEnd: (res) => {
-        const { status, message } = res;
-        console.log(status);
+        const { status, message, statusMessage } = res;
+        const data = message?.toObject() as RunResponse.AsObject;
+        if (status === grpc.Code.OK) {
+          setOutput(data.output);
+          onSendMessage("output", undefined, data.output);
+        } else {
+          const out = statusMessage.replace(/tmp\//g, "\n");
+          setOutput(out);
+          onSendMessage("output", undefined, out);
+        }
       },
     });
   };
@@ -171,6 +197,7 @@ function App() {
         <TextEditor
           room={room}
           value={value}
+          output={output}
           onInsert={onInsert}
           onDelete={onDelete}
           onRun={onRun}

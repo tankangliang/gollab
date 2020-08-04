@@ -51,3 +51,12 @@ textarea {
   text-align: start;
   appearance: textarea;
 }
+
+.output {
+  position: absolute;
+  top: 75%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+}
