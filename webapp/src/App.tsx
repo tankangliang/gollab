@@ -89,8 +89,11 @@ function App() {
             setLoading(false);
             setRoom(received.roomid);
             break;
-          case "insert":
-            console.log("insert");
+
+          case "output":
+            setOutput(received.output);
+            break;
+          default:
             const identifier = converter.pbIdentifierToLocalIdentifier(
               received.identifier as Identifier.AsObject
             );
@@ -98,8 +101,6 @@ function App() {
             lseq.broadcast(received.type, identifier);
 
             break;
-          case "output":
-            setOutput(received.output);
         }
 
         setValue(lseq.string);
