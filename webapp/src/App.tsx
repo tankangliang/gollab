@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import TextEditor from "./components/texteditor";
 import template from "./template";
@@ -25,12 +25,19 @@ import * as converter from "./helpers/converter";
 
 const HOST =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
+    ? "http://192.168.1.207:8080"
     : "http://18.188.191.0:8080";
 
+let position = {
+  at: 0,
+};
+const setPosition = (newval: { at: number }) => {
+  position = newval;
+};
 function App() {
   const [value, setValue] = useState<string>("");
   const [lseq, setLSEQ] = useState<LSEQ>(new LSEQ());
+  // const [position, setPosition] = useState<{ at: number }>({ at: 0 });
   const [roomCode, setRoomCode] = useState<string>("");
   const [user, setUser] = useState<string>("");
   const [output, setOutput] = useState<string>("");
@@ -38,6 +45,7 @@ function App() {
   const [room, setRoom] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [request, setRequest] = useState<Request | null>(null);
+  const input = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
     return () => {
@@ -48,7 +56,7 @@ function App() {
   }, [request]);
 
   const onCreate = () => {
-    const newRoom = LSEQ.getRandomString(6);
+    const newRoom = LSEQ.getRandomString(1);
     console.log(newRoom);
     const createRoomReq = new CreateRoomRequest();
     createRoomReq.setId(newRoom);
@@ -94,9 +102,7 @@ function App() {
             break;
           case "sendstate":
             console.log("sending state");
-
             lseq.values.forEach((val) => {
-              //console.log("sending ", val);
               onSendMessage("insert", received.roomid, val);
             });
 
@@ -105,12 +111,20 @@ function App() {
             setOutput(received.output);
             break;
           default:
-            console.log(received.type);
             const identifier = converter.pbIdentifierToLocalIdentifier(
               received.identifier as Identifier.AsObject
             );
 
-            lseq.broadcast(received.type, identifier);
+            const positionChanged = lseq.broadcast(received.type, identifier);
+
+            if (positionChanged !== -1) {
+              if (positionChanged < position.at) {
+                if (received.type === "insert")
+                  setPosition({ at: position.at + 1 });
+                if (received.type === "delete")
+                  setPosition({ at: position.at + 1 });
+              }
+            }
 
             break;
         }
@@ -118,8 +132,6 @@ function App() {
         setValue(lseq.string);
       },
       onEnd: (res, message) => {
-        console.log("Meessage is ", message);
-
         console.log(res === grpc.Code.OK);
         if (res !== grpc.Code.OK) {
           setError("Unable to join the room " + roomCode);
@@ -140,8 +152,8 @@ function App() {
     connect(roomCode, false);
   };
 
-  const onInsert = (val: string, position: number) => {
-    const identifier = lseq.insert(val, position);
+  const onInsert = (val: string, pos: number) => {
+    const identifier = lseq.insert(val, pos);
     setValue(lseq.string);
     onSendMessage("insert", room, identifier);
   };
@@ -215,6 +227,9 @@ function App() {
           onInsert={onInsert}
           onDelete={onDelete}
           onRun={onRun}
+          position={position}
+          setPosition={(val: number) => setPosition({ at: val })}
+          input={input}
         />
       )}
       {error && (

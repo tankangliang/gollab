@@ -7,17 +7,37 @@ type Props = {
   onInsert: (val: string, position: number) => void;
   onDelete: (position: number) => void;
   onRun: () => void;
+  position: { at: number };
+  setPosition: (val: number) => void;
+  input: React.RefObject<HTMLTextAreaElement>;
 };
 const TextEditor: React.FC<Props> = (props) => {
-  const { value, onInsert, onDelete, room, onRun, output } = props;
+  const {
+    value,
+    onInsert,
+    onDelete,
+    room,
+    onRun,
+    output,
+    position,
+    setPosition,
+    input,
+  } = props;
   const [localVal, setLocal] = useState<string>("");
-  const [position, setPosition] = useState<number>(0);
+
   const [lines] = useState<number[]>(new Array(99).fill(0));
-  const input = useRef<any>(null);
 
   useEffect(() => {
     setLocal(value);
   }, [value]);
+
+  useEffect(() => {
+    if (input.current) {
+      console.log("Setting position to ", position);
+      input.current.selectionStart = position.at;
+      input.current.selectionEnd = position.at;
+    }
+  }, [localVal]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     let pos = event.currentTarget.selectionStart;
@@ -39,10 +59,11 @@ const TextEditor: React.FC<Props> = (props) => {
 
     if (event.key.length === 1) {
       onInsert(event.key, pos);
+
       setPosition(pos + 1);
     } else if (event.key === "Backspace") {
       onDelete(pos);
-      console.log("Deleting at ", pos);
+      console.log("Settings to ", pos - 1);
       setPosition(pos - 1);
     } else if (event.key === "Enter") {
       onInsert("\n", pos);
@@ -97,12 +118,6 @@ const TextEditor: React.FC<Props> = (props) => {
             ref={input}
             value={localVal}
             onKeyDown={handleKeyDown}
-            onChange={(e) => {
-              setPosition(e.currentTarget.selectionStart);
-            }}
-            onFocus={(e) => {
-              e.target.selectionStart = position;
-            }}
           />
         </div>
       </div>
