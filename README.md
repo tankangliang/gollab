@@ -31,6 +31,17 @@ Currently, two separate terminals are required to run the application.
 
 More details can be found in the `main.go` file.
 
+## Docker
+
+There is a docker image I am currently using to run the application on AWS EC2. You can find it at https://hub.docker.com/repository/docker/tankangliang/gollab
+
+Run the following commands to view it locally
+
+```bash
+docker pull tankangliang/gollab:latest
+docker run --rm -p 3000:3000 -p 8080:8080 tankangliang/gollab:latest --app=3000
+```
+
 ## Todo
 
 - [x] Ability to run the file
