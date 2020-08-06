@@ -25,7 +25,7 @@ import * as converter from "./helpers/converter";
 
 const HOST =
   process.env.NODE_ENV === "development"
-    ? "http://192.168.1.207:8080"
+    ? "http://localhost:8080"
     : "http://18.188.191.0:8080";
 
 let position = {
@@ -55,7 +55,7 @@ function App() {
   }, [request]);
 
   const onCreate = () => {
-    const newRoom = LSEQ.getRandomString(1);
+    const newRoom = LSEQ.getRandomString(6);
     console.log(newRoom);
     const createRoomReq = new CreateRoomRequest();
     createRoomReq.setId(newRoom);
