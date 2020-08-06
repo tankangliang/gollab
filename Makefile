@@ -5,7 +5,7 @@ clean:
 	rm pb/*.go
 
 run:
-	go run main.go -port 8080
+	go run main.go --server 8080 --production=false
 
 test:
 	go test -cover -race ./...
@@ -13,6 +13,9 @@ test:
 webrun:
 	cd webapp && yarn start
 	
+build:
+	cd webapp && yarn build
+	cp -r ./webapp/build ./public
 
 webgen:
 	protoc \

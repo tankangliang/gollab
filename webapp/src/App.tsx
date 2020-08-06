@@ -23,7 +23,11 @@ import LSEQ from "./lseq";
 import LocalIdentifier from "./lseq/identifier";
 import * as converter from "./helpers/converter";
 
-let lseq = new LSEQ();
+const HOST =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8080"
+    : "http://18.188.191.0:8080";
+
 function App() {
   const [value, setValue] = useState<string>("");
   const [lseq, setLSEQ] = useState<LSEQ>(new LSEQ());
@@ -51,7 +55,7 @@ function App() {
     setLoading(true);
     grpc.unary(RoomService.CreateRoom, {
       request: createRoomReq,
-      host: "http://localhost:8080",
+      host: HOST,
       onEnd: (res) => {
         const { status } = res;
         if (status === grpc.Code.OK) {
@@ -73,7 +77,7 @@ function App() {
     setLoading(true);
     const request = grpc.invoke(RoomService.Connect, {
       request: connectReq,
-      host: "http://localhost:8080",
+      host: HOST,
       onMessage: (msg) => {
         const received = msg.toObject() as Message.AsObject;
         switch (received.type) {
@@ -172,7 +176,7 @@ function App() {
 
     grpc.unary(RoomService.Broadcast, {
       request: message,
-      host: "http://localhost:8080",
+      host: HOST,
       onEnd: (res) => {
         const { status, message } = res;
       },
@@ -185,7 +189,7 @@ function App() {
     runRequest.setFile(lseq.string);
     grpc.unary(RoomService.Run, {
       request: runRequest,
-      host: "http://localhost:8080",
+      host: HOST,
       onEnd: (res) => {
         const { status, message, statusMessage } = res;
         const data = message?.toObject() as RunResponse.AsObject;

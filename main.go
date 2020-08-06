@@ -17,9 +17,10 @@ import (
 )
 
 func main() {
-	port := flag.Int("port", 80, "port to run application on")
+	serverPort := flag.Int("server", 8080, "port to run grpc server on")
+	appPort := flag.Int("app", 80, "port to run webapp on")
+	runApp := flag.Bool("production", true, "run in production with static file host")
 	flag.Parse()
-	log.Printf("Starting server on port %d\n", *port)
 
 	roomServer := services.NewRoomServer(services.NewRooms())
 	grpcServer := grpc.NewServer()
@@ -30,23 +31,26 @@ func main() {
 		grpcweb.WithOriginFunc(func(origin string) bool {
 			return true
 		}))
+	fmt.Println(*runApp)
+	if *runApp {
+		go func() {
+			fs := http.FileServer(http.Dir("./public"))
+			http.Handle("/", fs)
+			appAddress := fmt.Sprintf(":%d", *appPort)
+			log.Println("Serving static on port ", *appPort)
+			err := http.ListenAndServe(appAddress, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-	serverAddress := fmt.Sprintf(":%d", *port)
-	//http.HandleFunc("/grpc", grpcHandler)
+	}
+
+	serverAddress := fmt.Sprintf(":%d", *serverPort)
+	log.Printf("Starting server on port %d\n", *serverPort)
 	err := http.ListenAndServe(serverAddress, wrappedGrpc)
 	if err != nil {
 		log.Fatalf("Failed to start server: %s", err)
 	}
-	/*
 
-		listener, err := net.Listen("tcp", serverAddress)
-		if err != nil {
-			log.Fatal("Failed to start server", err)
-		}
-
-		err = grpcServer.Serve(listener)
-		if err != nil {
-			log.Fatal("Failed to start server", err)
-		}
-	*/
 }
