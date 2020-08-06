@@ -28,10 +28,12 @@ func NewTriplet() *pb.Triplet {
 }
 
 // NewIdentifier returns a new sample Identifier with value and triplet field with one triplet
-func NewIdentifier() *pb.Identifier {
-	identifier := &pb.Identifier{
-		Value:    string(options[rand.Intn(len(options))]),
-		Triplets: []*pb.Triplet{NewTriplet()},
+func NewIdentifier() *pb.Message_Identifier {
+	identifier := &pb.Message_Identifier{
+		Identifier: &pb.Identifier{
+			Value:    string(options[rand.Intn(len(options))]),
+			Triplets: []*pb.Triplet{NewTriplet()},
+		},
 	}
 
 	return identifier
@@ -40,7 +42,7 @@ func NewIdentifier() *pb.Identifier {
 // NewMessage returns a sample Message with type of action and identifier
 func NewMessage() *pb.Message {
 	message := &pb.Message{
-		Identifier: NewIdentifier(),
+		Data: NewIdentifier(),
 	}
 	i := rand.Intn(2)
 	switch i {

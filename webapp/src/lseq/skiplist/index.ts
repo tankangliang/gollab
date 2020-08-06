@@ -5,12 +5,14 @@ export default class SkipList<T extends Comparable> {
   head: Box<T>[];
   highestLevel: number;
 
+  // Initialize default values
   constructor() {
     this.head = [];
     this.head[0] = Box.Head(0);
     this.highestLevel = 0;
   }
 
+  // Finds the Box at the position that we want to insert a new character in. This is needed for the LSEQ path generation algorithm
   atPosition(position: number): Box<T> {
     let current = this.head[this.highestLevel];
     let currentPosition = 0;
@@ -49,6 +51,10 @@ export default class SkipList<T extends Comparable> {
     return current;
   }
 
+  // Find a particular box with T.
+  // First return value indicates if the item exists
+  // Second return value gives the corresponding box or the one right before where box would have been placed
+  // Third return value returns the position of the box
   find(box: Box<T>): [boolean, Box<T>, number] {
     let position = 0;
     let current = this.head[this.highestLevel];
@@ -82,6 +88,8 @@ export default class SkipList<T extends Comparable> {
     return [false, current, position];
   }
 
+  // Inserts an item T into the skiplist and returns the position it is inserted
+  // -1 is returned if item is not found
   insert(item: T): number {
     const newItem = new Box(item, 0);
     const [found, left, position] = this.find(newItem);
@@ -100,6 +108,8 @@ export default class SkipList<T extends Comparable> {
     return position;
   }
 
+  // Deletes the item T in the skiplist and returns the position of the deleted item
+  // -1 is returned if item is not found
   delete(item: T): number {
     const itemToDelete = new Box(item, 0);
     const [found, box, position] = this.find(itemToDelete);
@@ -123,7 +133,7 @@ export default class SkipList<T extends Comparable> {
     return position;
   }
 
-  // Last completed: Cut down on right obj's skip
+  // Rolls a random float from [0,1] to determine if the box should be promoted to the level in the argument.This function calls itself again with a higher level if the current function succeeds in promoting
   shouldPromote(prev: Box<T>, level: number, position: number) {
     if (Math.random() > 0.5) {
       // Initialise new head
@@ -199,6 +209,7 @@ export default class SkipList<T extends Comparable> {
     return;
   }
 
+  // Returns all items in a sorted array
   get values(): T[] {
     let current = this.head[0];
     let vals: T[] = [];

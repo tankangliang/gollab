@@ -132,11 +132,9 @@ func (server *RoomServer) Run(ctx context.Context, req *pb.RunRequest) (*pb.RunR
 
 		return nil, status.Error(codes.Internal, outerr.String()[25:])
 
-		//return nil, status.Error(codes.Internal, "Failed to run file")
-	} else {
-		return &pb.RunResponse{
-			Output: out.String(),
-		}, nil
 	}
+	return &pb.RunResponse{
+		Output: out.String(),
+	}, nil
 
 }

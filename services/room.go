@@ -65,7 +65,8 @@ func (r *Rooms) GetRoom(roomID string) (*Room, error) {
 	return room, nil
 }
 
-// AddUser adds the user into the specified room
+// AddUser adds the user into the specified room. The user type
+// stores the id of the user as well as the stream to send data to
 func (r *Rooms) AddUser(u *user, roomID string) error {
 	log.Println("Adding user with id ", u.id)
 	r.mutex.Lock()
@@ -112,7 +113,8 @@ func (r *Rooms) RemoveUser(u *user, roomID string) {
 
 }
 
-// Broadcast takes the message and disseminates to all users
+// Broadcast takes the message and disseminates to all users in the room
+// specified in the message
 func (r *Rooms) Broadcast(message *pb.Message) {
 	roomID := message.GetRoomID()
 
@@ -136,7 +138,9 @@ func (r *Rooms) Broadcast(message *pb.Message) {
 
 }
 
-// SendCurrentState prompts the first user in the list to broadcast all identifiers
+// SendCurrentState prompts the first user in the list to broadcast
+// all identifiers. This is called when a new user joins the room
+// and helps to sync them up with what is on the document so far
 func (r *Rooms) SendCurrentState(roomID string) {
 	log.Println("Asking room to send state")
 	r.mutex.Lock()
