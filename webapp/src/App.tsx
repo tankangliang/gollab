@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import TextEditor from "./components/texteditor";
 import template from "./template";
@@ -25,7 +25,7 @@ import * as converter from "./helpers/converter";
 
 const HOST =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
+    ? "http://192.168.1.207:8080"
     : "http://18.188.191.0:8080";
 
 let position = {
@@ -45,7 +45,6 @@ function App() {
   const [room, setRoom] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [request, setRequest] = useState<Request | null>(null);
-  const input = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
     return () => {
@@ -56,7 +55,7 @@ function App() {
   }, [request]);
 
   const onCreate = () => {
-    const newRoom = LSEQ.getRandomString(6);
+    const newRoom = LSEQ.getRandomString(1);
     console.log(newRoom);
     const createRoomReq = new CreateRoomRequest();
     createRoomReq.setId(newRoom);
@@ -128,7 +127,8 @@ function App() {
 
             break;
         }
-
+        console.log("set value to new value");
+        console.log(lseq.string);
         setValue(lseq.string);
       },
       onEnd: (res, message) => {
@@ -229,7 +229,6 @@ function App() {
           onRun={onRun}
           position={position}
           setPosition={(val: number) => setPosition({ at: val })}
-          input={input}
         />
       )}
       {error && (

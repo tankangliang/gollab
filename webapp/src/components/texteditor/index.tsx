@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 type Props = {
   room: string;
@@ -9,7 +9,6 @@ type Props = {
   onRun: () => void;
   position: { at: number };
   setPosition: (val: number) => void;
-  input: React.RefObject<HTMLTextAreaElement>;
 };
 const TextEditor: React.FC<Props> = (props) => {
   const {
@@ -21,33 +20,25 @@ const TextEditor: React.FC<Props> = (props) => {
     output,
     position,
     setPosition,
-    input,
   } = props;
-  const [localVal, setLocal] = useState<string>("");
 
   const [lines] = useState<number[]>(new Array(99).fill(0));
-
-  useEffect(() => {
-    setLocal(value);
-  }, [value]);
+  const input = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
     if (input.current) {
-      console.log("Setting position to ", position);
+      input.current.value = value;
       input.current.selectionStart = position.at;
       input.current.selectionEnd = position.at;
     }
-  }, [localVal]);
+  }, [value, input, position.at]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     let pos = event.currentTarget.selectionStart;
     let end = event.currentTarget.selectionEnd;
 
     if (pos !== end) {
-      console.log("Start is " + pos.toString() + " End is " + end.toString());
-
       for (let v = end; v > pos; v--) {
-        console.log("deleting", v);
         onDelete(v);
       }
 
@@ -63,7 +54,6 @@ const TextEditor: React.FC<Props> = (props) => {
       setPosition(pos + 1);
     } else if (event.key === "Backspace") {
       onDelete(pos);
-      console.log("Settings to ", pos - 1);
       setPosition(pos - 1);
     } else if (event.key === "Enter") {
       onInsert("\n", pos);
@@ -116,7 +106,7 @@ const TextEditor: React.FC<Props> = (props) => {
             }}
             key="editor"
             ref={input}
-            value={localVal}
+            defaultValue={value}
             onKeyDown={handleKeyDown}
           />
         </div>
