@@ -62,9 +62,23 @@ const TextEditor: React.FC<Props> = (props) => {
     let pos = event.currentTarget.selectionStart;
     let end = event.currentTarget.selectionEnd;
 
+    if (
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowUp" ||
+      event.key === "ArrowRight" ||
+      event.key === "ArrowDown"
+    ) {
+      return;
+    }
+
     if (event.key === "Control" || controlPressed) {
       setPosition(pos, end);
       setControlPressed(true);
+      if (event.key === "x") {
+        for (let v = end; v > pos; v--) {
+          onDelete(v);
+        }
+      }
     } else {
       console.log("Ran");
       if (pos !== end) {

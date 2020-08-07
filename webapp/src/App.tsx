@@ -197,6 +197,7 @@ function App() {
   // Response received is the output of running the code
   // This output will be broadcasted to other users
   const onRun = () => {
+    setOutput("Running...");
     const runRequest = new RunRequest();
     runRequest.setRoom(room);
     runRequest.setFile(lseq.string);
